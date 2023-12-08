@@ -44,12 +44,7 @@ namespace DefaultNamespace
             Destroy(currentLevel.gameObject);
             LevelDestroyed?.Invoke();
         }
-        /*
-        public PlayerManager GetPlayerManager()
-        {
-            return currentLevel.GetPlayerManager();
-        }
-        */
+       
         public void SetLevelIndexToNextLevel()
         {   
             Debug.Log($"currentLevelIndex {currentLevelIndex}");

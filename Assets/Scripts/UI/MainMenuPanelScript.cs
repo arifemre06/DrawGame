@@ -10,7 +10,7 @@ namespace DefaultNamespace.UI
         [SerializeField] private Button startButton;
         [SerializeField] private Button quitButton;
         [SerializeField] private Button settingsButton;
-        void Start()
+        private void Awake()
         {
             startButton.onClick.AddListener(OnStartButtonClicked);
             quitButton.onClick.AddListener(OnQuitButtonClicked);
@@ -20,12 +20,6 @@ namespace DefaultNamespace.UI
         private void OnSettingsClicked()
         {
             EventManager.RaiseOnGameStateChanged(GameState.MainMenu,GameState.Settings);
-        }
-
-
-        void Update()
-        {
-            
         }
 
         private void OnQuitButtonClicked()

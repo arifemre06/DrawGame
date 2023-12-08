@@ -9,17 +9,12 @@ namespace DefaultNamespace.UI
     {
         [SerializeField] private Button mainMenuButton;
         [SerializeField] private Button retryButton;
-        void Start()
+        private void Awake()
         {
             mainMenuButton.onClick.AddListener(OnMainMenuButtonClicked);
             retryButton.onClick.AddListener(OnRetryButtonClicked);
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-            
-        }
 
         private void OnRetryButtonClicked()
         {

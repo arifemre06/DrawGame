@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -17,24 +18,36 @@ namespace DefaultNamespace.UI
         [SerializeField] private TextMeshProUGUI musicSoundValueText;
 
 
-        void Start()
+        private void Awake()
         {
             mainMenuButton.onClick.AddListener(MainMenuButtonClicked);
             gameSoundSlider.onValueChanged.AddListener(OnGameSoundValueChanged);
             musicSoundSlider.onValueChanged.AddListener(OnMusicSoundValueChanged);
         }
 
+        private void Start()
+        {
+            float gameSound = PlayerPrefs.GetFloat("GameSoundVolume");
+            gameSoundSlider.value = gameSound;
+            float musicSound = PlayerPrefs.GetFloat("MusicVolume");
+            musicSoundSlider.value = musicSound;
+            float musicTextValue =  musicSound  * 100;
+            float gameTextValue = gameSound * 100;
+            gameSoundValueText.text = gameTextValue.ToString("#.");
+            musicSoundValueText.text = musicTextValue.ToString("#.");
+        }
+
         private void OnMusicSoundValueChanged(float value)
         {
-            value = value * 100;
-            musicSoundValueText.text = "%" + value.ToString("#.");
+            float textValue = value * 100;
+            musicSoundValueText.text = "%" + textValue.ToString("#.");
             EventManager.RaiseMusicSoundChanged(value);
         }
 
         private void OnGameSoundValueChanged(float value)
         {
-            value = value * 100;
-            gameSoundValueText.text = "%" + value.ToString("#.");
+            float textValue = value * 100;
+            gameSoundValueText.text = "%" + textValue.ToString("#.");
             EventManager.RaiseGameSoundChanged(value);
         }
 
@@ -43,10 +56,5 @@ namespace DefaultNamespace.UI
             EventManager.RaiseMainMenuButtonClicked();
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
     }
 }

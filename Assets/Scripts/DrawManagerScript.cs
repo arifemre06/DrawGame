@@ -18,10 +18,15 @@ public class DrawManagerScript : MonoBehaviour
     public const float LOWERBORDER = -8.52f;
     public const float RIGHTBORDER = 16.2f;
     public const float LEFTBORDER = -16.2f;
-
+    
+    private void Awake()
+    {
+        _lines = new List<LineScript>();
+    }
 
     void Start()
-    {
+    {   
+      
         _mainCamera = Camera.main;
         
     }
@@ -35,6 +40,8 @@ public class DrawManagerScript : MonoBehaviour
             if (mousePos.y is < UPPERBORDER and > LOWERBORDER && mousePos.x is < RIGHTBORDER and > LEFTBORDER)
             {
                 _currentLine = Instantiate(_linePrefab, mousePos, Quaternion.identity);
+                _lines.Add(_currentLine);
+                
             }
 
         }
@@ -53,28 +60,29 @@ public class DrawManagerScript : MonoBehaviour
             
         }    
         
-        
     }
 
     public void DestroyAllLines()
     {
-        GameObject[] lineScripts = GameObject.FindGameObjectsWithTag("Line");
-        /*
-        if (_lines != null)
-        {
-            foreach (LineScript line in _lines)
-            {
-
-                Destroy(line);
-
-            }
+        //GameObject[] lineScripts = GameObject.FindGameObjectsWithTag("Line");
+        
+        
+          
+        for (int i = 0; i < _lines.Count; i++)
+        { 
+            Destroy(_lines[i].gameObject);
         }
-        */
+        
+        _lines.Clear();
+           
+        
+        
+        /*
         for (int i = 0; i < lineScripts.Length; i++)
         {
             Destroy(lineScripts[i].gameObject);
         }
-        
+        */
         
     }
 }

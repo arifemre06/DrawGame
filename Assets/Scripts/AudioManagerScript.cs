@@ -9,7 +9,10 @@ public class AudioManagerScript : MonoBehaviour
     [SerializeField] private AudioSource gameWon;
     [SerializeField] private AudioSource gameFailed;
     [SerializeField] private AudioSource backGroundMusic;
-    void Awake()
+    private const float FirstSessionMusicVolume = 1;
+    private const float FirstSessionGameSoundVolume = 1;
+
+    private void Awake()
     {
         EventManager.StartHeistButtonClicked += PlayBackGroundAudio;
         EventManager.GameWon += PlayGameWonAudio;
@@ -17,6 +20,22 @@ public class AudioManagerScript : MonoBehaviour
         EventManager.CollectablesCollected += PlayCollectablesCollectedAudio;
         EventManager.GameSoundChanged += OnGameSoundValueChanged;
         EventManager.MusicSoundChanged += OnMusicSoundValueChanged;
+
+
+        int isFirstSession = PlayerPrefs.GetInt("IsFirstSession");
+        if (isFirstSession == 0)
+        {
+            SetGameVolume(FirstSessionGameSoundVolume);
+            backGroundMusic.volume = FirstSessionMusicVolume;
+            PlayerPrefs.SetInt("IsFirstSession", 1);
+            PlayerPrefs.SetFloat("MusicVolume", FirstSessionMusicVolume);
+            PlayerPrefs.SetFloat("GameSoundVolume", FirstSessionGameSoundVolume);
+        }
+        else
+        {
+            SetGameVolume(PlayerPrefs.GetFloat("GameSoundVolume"));
+            backGroundMusic.volume = PlayerPrefs.GetFloat("MusicVolume");
+        }
     }
 
     private void OnDestroy()
@@ -32,13 +51,13 @@ public class AudioManagerScript : MonoBehaviour
     private void OnMusicSoundValueChanged(float value)
     {
         backGroundMusic.volume = value;
+        PlayerPrefs.SetFloat("MusicVolume", value);
     }
 
     private void OnGameSoundValueChanged(float value)
     {
-        gameFailed.volume = value;
-        gameWon.volume = value;
-        collecting.volume = value;
+        SetGameVolume(value);
+        PlayerPrefs.SetFloat("GameSoundVolume", value);
     }
 
     private void PlayCollectablesCollectedAudio(int obj)
@@ -61,9 +80,10 @@ public class AudioManagerScript : MonoBehaviour
         backGroundMusic.Play();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void SetGameVolume(float value)
     {
-        
+        gameFailed.volume = value;
+        gameWon.volume = value;
+        collecting.volume = value;
     }
 }

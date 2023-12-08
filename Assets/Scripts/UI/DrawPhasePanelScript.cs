@@ -12,7 +12,7 @@ namespace DefaultNamespace.UI
         [SerializeField] private Button resetButton;
 
         // Start is called before the first frame update
-        void Start()
+        private void Awake()
         {
             startHeistButton.onClick.AddListener(OnStartButtonClicked);
             resetButton.onClick.AddListener(OnResetButtonClicked);
@@ -21,15 +21,11 @@ namespace DefaultNamespace.UI
 
         private void OnResetButtonClicked()
         {
-            //bi bakmak gerekebilir
             EventManager.RaiseRetryLevel();
+          
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+     
 
         private void OnStartButtonClicked()
         {

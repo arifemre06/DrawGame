@@ -9,16 +9,10 @@ namespace DefaultNamespace.UI
     {
         [SerializeField] private Button nextLevelButton;
         [SerializeField] private Button mainMenuButton;
-        void Start()
+        private void Awake()
         {
             nextLevelButton.onClick.AddListener(OnNextLevelClicked);
             mainMenuButton.onClick.AddListener(OnMainMenuClicked);
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-            
         }
 
         private void OnMainMenuClicked()

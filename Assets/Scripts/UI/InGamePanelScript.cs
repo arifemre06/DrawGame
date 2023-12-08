@@ -17,7 +17,7 @@ namespace DefaultNamespace.UI
 
         private int _requiredMoneyForWin = 0;
         // Start is called before the first frame update
-        void Start()
+        private void Awake()
         {   
             EventManager.CollectablesCollected += OnMoneyChangedUpdateGoldText;
             EventManager.LevelCreated += OnLevelCreatedLearnRequiredMoneyForWin;
@@ -38,11 +38,6 @@ namespace DefaultNamespace.UI
             goldText.text = "/" + _requiredMoneyForWin + "$";
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-            
-        }
 
         private void OnRetryButtonClicked()
         {

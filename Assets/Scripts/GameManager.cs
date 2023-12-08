@@ -89,7 +89,7 @@ public class GameManager : MonoBehaviour
 
     private void OnMainMenuButtonClicked()
     {
-        
+        _drawManager.DestroyAllLines();
         //CreateLevel();
         ChangeGameState(GameState.MainMenu);
         Time.timeScale = 1;
@@ -116,7 +116,6 @@ public class GameManager : MonoBehaviour
 
     private void IncreaseLevelIndexAndCreateNextLevel()
     {
-        Debug.Log("buraya gelıyoz dımı emınız");
         levelManager.SetLevelIndexToNextLevel();
         CreateLevel();
     }
