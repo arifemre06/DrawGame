@@ -12,16 +12,16 @@ namespace DefaultNamespace
         private LevelScript currentLevel;
         private int currentLevelIndex;
 
-        public void PrepareCurrentLevel()
+        public void PrepareCurrentLevel(int levelIndex)
         {
             if (currentLevel != null)
             {
                 DestroyLevel();
             }
 
-            if (levelPrefabs[currentLevelIndex] != null)
+            if (levelPrefabs[levelIndex] != null)
             {
-                CreateLevel(currentLevelIndex);
+                CreateLevel(levelIndex);
             }
             else
             {
@@ -49,6 +49,7 @@ namespace DefaultNamespace
         {   
             Debug.Log($"currentLevelIndex {currentLevelIndex}");
             currentLevelIndex += 1;
+            PlayerPrefs.SetInt("levelIndex",currentLevelIndex);
             
         }
 

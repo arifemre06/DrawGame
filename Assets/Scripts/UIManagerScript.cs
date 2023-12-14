@@ -13,6 +13,10 @@ public class UIManagerScript : MonoBehaviour
     [SerializeField] private UIPanel gameFailedPanel;
     [SerializeField] private UIPanel gameWonPanel;
     [SerializeField] private UIPanel settingsPanel;
+    [SerializeField] private UIPanel areYouSurePanel;
+    [SerializeField] private UIPanel cheatSheetPanel;
+    [SerializeField] private UIPanel tutorialPanel;
+    [SerializeField] private UIPanel tutorial2Panel;
     
     private void Awake()
     {
@@ -59,8 +63,24 @@ public class UIManagerScript : MonoBehaviour
         {
             ActivateSettingsPanel();
         }
+        else if (newState == GameState.AreYouSure)
+        {
+            ActivateAreYouSurePanel();
+        }
+        else if (newState == GameState.CheatSheet)
+        {
+            ActivateCheatSheetPanel();
+        }
+        else if (newState == GameState.Tutorial)
+        {
+            ActivateTutorialPanel();
+        }
+        else if (newState == GameState.Tutorial2)
+        {
+            ActivateTutorial2Panel();
+        }
     }
-
+    
     private void DeActivateAllPanels()
     {   
         
@@ -70,8 +90,30 @@ public class UIManagerScript : MonoBehaviour
         gameFailedPanel.DeActivatePanel();
         gameWonPanel.DeActivatePanel();
         settingsPanel.DeActivatePanel();
+        areYouSurePanel.DeActivatePanel();
+        cheatSheetPanel.DeActivatePanel();
+        tutorialPanel.DeActivatePanel();
+        tutorial2Panel.DeActivatePanel();
+        
+    }
+    private void ActivateTutorial2Panel()
+    {
+        tutorial2Panel.ActivatePanel();
     }
 
+    private void ActivateTutorialPanel()
+    {
+        tutorialPanel.ActivatePanel();
+    }
+    
+    private void ActivateCheatSheetPanel()
+    {
+        cheatSheetPanel.ActivatePanel();
+    }
+    private void ActivateAreYouSurePanel()
+    {
+        areYouSurePanel.ActivatePanel();
+    }
     private void ActivateSettingsPanel()
     {
         settingsPanel.ActivatePanel();

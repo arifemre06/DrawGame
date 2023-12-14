@@ -23,6 +23,11 @@ namespace DefaultNamespace
             }
             return null;
         }
+
+        public List<CollectableMeta> GetAllCollectablesMeta()
+        {
+            return values;
+        }
         
     }
     

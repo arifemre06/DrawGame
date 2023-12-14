@@ -5,10 +5,11 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    private int money = 0;
-    private int requiredMoneyForWin;
+    private int _money = 0;
+    private int _requiredMoneyForWin;
+    private int _levelIndex = 0;
     [SerializeField] private LevelManagerScript levelManager;
-    [SerializeField] private DrawManagerScript _drawManager;
+    [SerializeField] private DrawManagerScript drawManager;
 
     public static GameState gameState{get; private set;}
     
@@ -21,50 +22,21 @@ public class GameManager : MonoBehaviour
         EventManager.NextLevel += OnNextLevel;
         EventManager.Quit += OnQuit;
         EventManager.MainMenuButtonClicked += OnMainMenuButtonClicked;
-        EventManager.GameStart += OnGameStart;
+        EventManager.NewGameStart += OnNewGameStart;
         EventManager.BallArrivedToFinish += OnBallArrivedToFinish;
         EventManager.LevelCreated += OnLevelCreated;
         EventManager.CollectablesCollected += UpdateMoneyWhenCollectablesCollected;
+        EventManager.ContinueButtonClicked += OnContinueButtonClicked;
+        EventManager.NewGameStartApproved += OnNewGameStartApproved;
+        EventManager.CheatSheetOpened += OnCheatSheetOpened;
+        EventManager.CheatSheetClosed += OnCheatSheetClosed;
+        EventManager.TutorialOpened += OnTutorialOpened;
+        EventManager.TutorialClosed += OnTutorialClosed;
+        EventManager.Tutorial2Opened += OnTutorial2Opened;
       
         gameState = GameState.None;
     }
-
-    private void OnLevelCreated(int requiredMoney)
-    {
-        requiredMoneyForWin = requiredMoney;
-    }
-
-    private void OnBallArrivedToFinish()
-    {
-        if (money >= requiredMoneyForWin)
-        {
-            EventManager.RaiseGameWon();
-        }
-        else
-        {
-            EventManager.RaiseOnGameFailed();
-        }
-    }
-
-    private void OnGameStart()
-    {   
-        CreateLevel();
-        ChangeGameState(GameState.DrawPhase);
-        
-    }
-
-    void Start()
-    {
-        
-        OnMainMenuButtonClicked();
-    }
-
-    void UpdateMoneyWhenCollectablesCollected(int gainedmoney)
-    {
-        money += gainedmoney;
-        Debug.Log(money);
-    }
-
+    
     private void OnDestroy()
     {
         EventManager.GameFailed -= OnGameFailed;
@@ -74,22 +46,114 @@ public class GameManager : MonoBehaviour
         EventManager.NextLevel -= OnNextLevel;
         EventManager.Quit -= OnQuit;
         EventManager.MainMenuButtonClicked -= OnMainMenuButtonClicked;
-        EventManager.GameStart -= OnGameStart;
+        EventManager.NewGameStart -= OnNewGameStart;
         EventManager.BallArrivedToFinish -= OnBallArrivedToFinish;
         EventManager.LevelCreated -= OnLevelCreated;
         EventManager.CollectablesCollected -= UpdateMoneyWhenCollectablesCollected;
+        EventManager.ContinueButtonClicked -= OnContinueButtonClicked;
+        EventManager.NewGameStartApproved -= OnNewGameStartApproved;
+        EventManager.CheatSheetOpened -= OnCheatSheetOpened;
+        EventManager.CheatSheetClosed -= OnCheatSheetClosed;
+        EventManager.TutorialOpened -= OnTutorialOpened;
+        EventManager.TutorialClosed -= OnTutorialClosed;
+        EventManager.Tutorial2Opened -= OnTutorial2Opened;
     }
 
+    private void OnTutorial2Opened()
+    {
+        ChangeGameState(GameState.Tutorial2);
+    }
+
+    private void OnTutorialClosed()
+    {
+        ChangeGameState(GameState.MainMenu);
+    }
+
+    private void OnTutorialOpened()
+    {
+        ChangeGameState(GameState.Tutorial);
+    }
+
+    private void OnCheatSheetClosed()
+    {
+        ChangeGameState(GameState.DrawPhase);
+        Time.timeScale = 1;
+    }
+
+    private void OnCheatSheetOpened()
+    {   
+        ChangeGameState(GameState.CheatSheet);
+        Time.timeScale = 0;
+    }
+
+    private void OnNewGameStartApproved()
+    {
+        _levelIndex = 0;
+        PlayerPrefs.SetInt("levelIndex",0);
+        CreateLevel();
+        ChangeGameState(GameState.DrawPhase);
+    }
+
+    private void OnContinueButtonClicked()
+    {   
+        _levelIndex = PlayerPrefs.GetInt("levelIndex");
+        CreateLevel();
+        ChangeGameState(GameState.DrawPhase);
+    }
+
+    private void OnLevelCreated(int requiredMoney)
+    {
+        _requiredMoneyForWin = requiredMoney;
+    }
+
+    private void OnBallArrivedToFinish()
+    {
+        if (_money >= _requiredMoneyForWin)
+        {
+            EventManager.RaiseGameWon();
+        }
+        else
+        {
+            EventManager.RaiseOnGameFailed();
+        }
+    }
+
+    private void OnNewGameStart()
+    {
+        if (_levelIndex > 0)
+        {
+            ChangeGameState(GameState.AreYouSure);
+        }
+        else
+        {
+            _levelIndex = 0;
+            CreateLevel();
+            ChangeGameState(GameState.DrawPhase);
+        }
+    }
+
+    private void Start()
+    {
+        _levelIndex = PlayerPrefs.GetInt("levelIndex");
+        OnMainMenuButtonClicked();
+    }
+
+    private void UpdateMoneyWhenCollectablesCollected(int gainedmoney)
+    {
+        _money += gainedmoney;
+        Debug.Log(_money);
+    }
+    
     private void OnArrivedToFinish()
     {   
-        _drawManager.DestroyAllLines();
+        drawManager.DestroyAllLines();
         ChangeGameState(GameState.GameWon);
         
     }
 
     private void OnMainMenuButtonClicked()
     {
-        _drawManager.DestroyAllLines();
+        drawManager.DestroyAllLines();
         //CreateLevel();
         ChangeGameState(GameState.MainMenu);
         Time.timeScale = 1;
@@ -102,7 +166,7 @@ public class GameManager : MonoBehaviour
 
     private void OnNextLevel()
     {   
-        _drawManager.DestroyAllLines();
+        drawManager.DestroyAllLines();
         IncreaseLevelIndexAndCreateNextLevel();
         ChangeGameState(GameState.DrawPhase);
     }
@@ -117,43 +181,35 @@ public class GameManager : MonoBehaviour
     private void IncreaseLevelIndexAndCreateNextLevel()
     {
         levelManager.SetLevelIndexToNextLevel();
+        _levelIndex = PlayerPrefs.GetInt("levelIndex");
         CreateLevel();
     }
 
     private void CreateLevel()
     {   
-        _drawManager.DestroyAllLines();
-        levelManager.PrepareCurrentLevel();
-        //playerManager = levelManager.GetPlayerManager();
-        
+        drawManager.DestroyAllLines();
+        levelManager.PrepareCurrentLevel(_levelIndex);
+
     }
 
     private void OnGameFailed()
     {   
-        _drawManager.DestroyAllLines();
+        drawManager.DestroyAllLines();
         Time.timeScale = 0;
         ChangeGameState(GameState.GameFailed);
     }
     
     private void ChangeGameState(GameState newState)
     {
-        EventManager.RaiseOnCollectablesCollected(-money);
+        EventManager.RaiseOnCollectablesCollected(-_money);
         var oldState = gameState;
         Debug.Log($"changing to state {oldState} - {newState}");
         gameState = newState;
         EventManager.RaiseOnGameStateChanged(oldState, newState);
     }
     
-    /*
-    private void StartGamePlay()
-    {
-        Time.timeScale = 1;
-        ChangeGameState(GameState.Gameplay);
-        playerManager.StartGame();
-    }
-    */
     
-    public void OnStartHeistButtonClicked()
+    private void OnStartHeistButtonClicked()
     {
         ChangeGameState(GameState.InGameMenu);
         Time.timeScale = 1;
@@ -168,6 +224,10 @@ public enum GameState
     InGameMenu,
     GameFailed,
     GameWon,
-    Settings
-    
+    Settings,
+    AreYouSure,
+    CheatSheet,
+    Tutorial,
+    Tutorial2
+
 }

@@ -14,10 +14,10 @@ public class DrawManagerScript : MonoBehaviour
     
 
     public const float RESOLUTION = 0.1f;
-    public const float UPPERBORDER = 8.52f;
-    public const float LOWERBORDER = -8.52f;
-    public const float RIGHTBORDER = 16.2f;
-    public const float LEFTBORDER = -16.2f;
+    public const float UPPERBORDER = 8.58f;
+    public const float LOWERBORDER = -8.58f;
+    public const float RIGHTBORDER = 16.6f;
+    public const float LEFTBORDER = -16.6f;
     
     private void Awake()
     {
