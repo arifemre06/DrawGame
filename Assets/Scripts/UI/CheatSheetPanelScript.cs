@@ -27,15 +27,16 @@ namespace DefaultNamespace.UI
             {   
                 Transform collectableUITransform =Instantiate(collectableUITemplate, transform);
                 collectableUITransform.gameObject.SetActive(true);
-                float offset = -80f;
-                float xoffset = 180f;
+                float offset = -160f;
+                float xoffset = 360f;
                 int xindex = 0;
                 if (index % 5 == 0 && index != 0)
                 {
                     xindex += 1;
                     index = 0;
                 }
-                collectableUITransform.GetComponent<RectTransform>().anchoredPosition = new Vector2(xindex * xoffset, index * offset);
+                //baslangıc konumu ayarlamak icin sihirli sayılar kullanıldı.
+                collectableUITransform.GetComponent<RectTransform>().anchoredPosition = new Vector2(xindex * xoffset + 50, index * offset -50);
                 collectableUITransform.Find("Image").GetComponent<Image>().sprite = collectableMeta.Sprite;
                 collectableUITransform.Find("Valuetext").GetComponent<TextMeshProUGUI>().text=collectableMeta.Value.ToString() + "$";
                 index++;
